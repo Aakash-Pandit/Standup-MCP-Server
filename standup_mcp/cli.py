@@ -21,12 +21,18 @@ def _init():
     target = Path.cwd() / ".mcp.json"
 
     if target.exists():
-        print(f"[standup-mcp] .mcp.json already exists at {target}")
-        print("Edit it to add your credentials if you haven't already.")
-        return
-
-    target.write_text(json.dumps(_MCP_JSON_TEMPLATE, indent=2) + "\n")
-    print(f"[standup-mcp] Created {target}\n")
+        existing = json.loads(target.read_text())
+        servers = existing.setdefault("mcpServers", {})
+        if "standup" in servers:
+            print(f"[standup-mcp] 'standup' server already present in {target}")
+            print("Edit it to update your credentials if needed.")
+            return
+        servers["standup"] = _MCP_JSON_TEMPLATE["mcpServers"]["standup"]
+        target.write_text(json.dumps(existing, indent=2) + "\n")
+        print(f"[standup-mcp] Added 'standup' server to existing {target}\n")
+    else:
+        target.write_text(json.dumps(_MCP_JSON_TEMPLATE, indent=2) + "\n")
+        print(f"[standup-mcp] Created {target}\n")
     print("Next steps:")
     print("  1. Open .mcp.json and replace the placeholder values:")
     print("       NOTION_TOKEN       — your Notion integration secret")
