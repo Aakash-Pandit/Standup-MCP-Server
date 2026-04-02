@@ -8,10 +8,24 @@ from notion_client import Client
 
 mcp = FastMCP("standup-bot")
 
-notion = Client(auth=os.getenv("NOTION_TOKEN"))
-NOTION_PAGE_ID = os.getenv("NOTION_DATABASE_ID")
+_REQUIRED_ENV = ["NOTION_TOKEN", "NOTION_DATABASE_ID", "COHERE_API_KEY"]
 
-co = cohere.ClientV2(api_key=os.getenv("COHERE_API_KEY"))
+
+def _check_env():
+    missing = [k for k in _REQUIRED_ENV if not os.getenv(k)]
+    if missing:
+        raise RuntimeError(
+            f"Missing required environment variables: {', '.join(missing)}\n"
+            "Run `standup-mcp init` to set them up."
+        )
+
+
+def _notion():
+    return Client(auth=os.environ["NOTION_TOKEN"])
+
+
+def _cohere():
+    return cohere.ClientV2(api_key=os.environ["COHERE_API_KEY"])
 
 
 def _append_to_notion(tasks: list[str]) -> dict:
@@ -34,7 +48,7 @@ def _append_to_notion(tasks: list[str]) -> dict:
         }
         for task in tasks
     ]
-    return notion.blocks.children.append(block_id=NOTION_PAGE_ID, children=blocks)
+    return _notion().blocks.children.append(block_id=os.environ["NOTION_DATABASE_ID"], children=blocks)
 
 
 @mcp.tool()
@@ -80,7 +94,8 @@ def log_standup(message: str) -> str:
         }
     ]
 
-    response = co.chat(
+    _check_env()
+    response = _cohere().chat(
         model="command-a-03-2025",
         messages=[
             {
