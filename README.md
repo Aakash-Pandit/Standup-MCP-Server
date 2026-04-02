@@ -11,20 +11,19 @@ It extracts the tasks (via Cohere) and appends them as a dated bullet list to yo
 
 ## Quick start
 
-### 1. Install
+### 1. Install &amp; add `.mcp.json` to your repo
 
-```bash
-pip install standup-mcp
-# or use uvx (no install needed)
-```
+Pick one — run this once inside your project directory:
 
-### 2. Add `.mcp.json` to your repo
-
-Run this once inside your project directory:
-
+**Using `uvx` (no install needed):**
 ```bash
 uvx standup-mcp init
-# or if installed: standup-mcp init
+```
+
+**Using `pip`:**
+```bash
+pip install standup-mcp
+standup-mcp init
 ```
 
 This creates a `.mcp.json` file:
