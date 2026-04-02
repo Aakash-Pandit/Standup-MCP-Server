@@ -1,3 +1,4 @@
+import shutil
 import sys
 import json
 from pathlib import Path
@@ -46,9 +47,15 @@ def _init():
         "Get it at: dashboard.cohere.com/api-keys",
     )
 
+    binary = shutil.which("standup-mcp")
+    if binary:
+        command, args = binary, []
+    else:
+        command, args = "uvx", ["standup-mcp"]
+
     config = {
-        "command": "uvx",
-        "args": ["standup-mcp"],
+        "command": command,
+        "args": args,
         "env": {
             "NOTION_TOKEN": notion_token,
             "NOTION_DATABASE_ID": notion_db_id,
