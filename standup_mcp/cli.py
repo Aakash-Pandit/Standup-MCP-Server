@@ -1,20 +1,15 @@
 import os
 import shutil
-import subprocess
 import sys
 import json
 from pathlib import Path
 
 
-def _prompt(label: str, hint: str, secret: bool = False) -> str:
+def _prompt(label: str, hint: str) -> str:
     print(f"\n  {label}")
     print(f"  {hint}")
     while True:
-        if secret:
-            import getpass
-            value = getpass.getpass("  > ").strip()
-        else:
-            value = input("  > ").strip()
+        value = input("  > ").strip()
         if value:
             return value
         print("  (cannot be empty, please try again)")
@@ -77,7 +72,6 @@ def _init():
     notion_token = _prompt(
         "NOTION_TOKEN — your Notion integration secret",
         "Get it at: notion.so/my-integrations → New integration → copy the secret",
-        secret=True,
     )
     notion_db_id = _prompt(
         "NOTION_DATABASE_ID — your Notion page ID",
@@ -86,13 +80,14 @@ def _init():
     cohere_key = _prompt(
         "COHERE_API_KEY — your Cohere API key",
         "Get it at: dashboard.cohere.com/api-keys",
-        secret=True,
     )
 
     _write_to_zshrc(notion_token, notion_db_id, cohere_key)
 
-    # Reload zshrc so current session picks them up
-    subprocess.run(["zsh", "-c", "source ~/.zshrc"], check=False)
+    # Apply to current process immediately
+    os.environ["NOTION_TOKEN"] = notion_token
+    os.environ["NOTION_DATABASE_ID"] = notion_db_id
+    os.environ["COHERE_API_KEY"] = cohere_key
 
     # Write .mcp.json without any credentials
     binary = shutil.which("standup-mcp")
@@ -113,8 +108,6 @@ def _init():
         target.write_text(json.dumps({"mcpServers": {"standup": config}}, indent=2) + "\n")
         print(f"\n[standup-mcp] Created {target}")
 
-    print("\n  To apply the tokens in your current terminal, run:")
-    print("    source ~/.zshrc")
     print("\nAll done! Next step:")
     print("  Restart your Claude Code session, then tell your agent:")
     print('  "log my standup — today I worked on X and Y"\n')
