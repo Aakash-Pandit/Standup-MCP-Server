@@ -1,0 +1,11 @@
+# MCP config (contains API tokens)
+.mcp.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+.env
