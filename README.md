@@ -82,7 +82,11 @@ cd your-project
 standup-mcp init
 ```
 
-The wizard prompts for each credential and writes `.mcp.json` automatically:
+The wizard will:
+- Prompt for your three credentials
+- Save them to `~/.zshrc` (not in `.mcp.json` — keeps tokens off the repo)
+- Apply them to your current session automatically
+- Create `.mcp.json` in your project with no credentials inside
 
 ```
 [standup-mcp] Setup wizard
@@ -92,13 +96,15 @@ The wizard prompts for each credential and writes `.mcp.json` automatically:
   Get it at: notion.so/my-integrations → New integration → copy the secret
   > secret_xxxxxxxxxxxxxxxxxxxx
 
-  NOTION_DATABASE_ID — your Notion database ID
+  NOTION_DATABASE_ID — your Notion page ID
   Open your Notion page in browser → copy the ID from the URL
   > abc123xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
   COHERE_API_KEY — your Cohere API key
   Get it at: dashboard.cohere.com/api-keys
   > xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+  Written to /Users/you/.zshrc
 
 [standup-mcp] Created .mcp.json
 
@@ -145,6 +151,8 @@ It will append to your Notion page:
 | `NOTION_DATABASE_ID` | Your Notion page URL → the long ID after the workspace name |
 | `COHERE_API_KEY` | [dashboard.cohere.com/api-keys](https://dashboard.cohere.com/api-keys) |
 
+Tokens are stored in `~/.zshrc` — never in `.mcp.json` or the repo.
+
 ---
 
 ## Troubleshooting
@@ -159,7 +167,7 @@ Then restart Claude Code.
 
 **Notion page not updating**
 
-Your integration doesn't have access to the page. Fix:
+Your integration doesn't have access to the page:
 - Open the Notion page → **...** → **Connections** → add your integration
 
 **`standup-mcp: command not found`**
