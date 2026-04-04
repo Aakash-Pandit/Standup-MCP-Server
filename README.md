@@ -83,21 +83,24 @@ standup-mcp init
 ```
 
 The wizard will:
-- Prompt for your three credentials
-- Save them to `~/.zshrc` (not in `.mcp.json` — keeps tokens off the repo)
-- Apply them to your current session automatically
+- Prompt for your three credentials (visible as you type)
+- Save them to `~/.zshrc` — never inside `.mcp.json` or the repo
+- Apply them to your current session automatically (no need to run `source ~/.zshrc`)
 - Create `.mcp.json` in your project with no credentials inside
 
 ```
 [standup-mcp] Setup wizard
 ========================================
 
+  Tokens will be saved to ~/.zshrc (not in .mcp.json).
+  This keeps your credentials secure and works across all projects.
+
   NOTION_TOKEN — your Notion integration secret
   Get it at: notion.so/my-integrations → New integration → copy the secret
   > secret_xxxxxxxxxxxxxxxxxxxx
 
   NOTION_DATABASE_ID — your Notion page ID
-  Open your Notion page in browser → copy the ID from the URL
+  Open your Notion page in browser → copy the ID from the URL (notion.so/<workspace>/<ID>)
   > abc123xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
   COHERE_API_KEY — your Cohere API key
@@ -111,6 +114,19 @@ The wizard will:
 All done! Next step:
   Restart your Claude Code session, then tell your agent:
   "log my standup — today I worked on X and Y"
+```
+
+The generated `.mcp.json` contains no credentials — just the command:
+
+```json
+{
+  "mcpServers": {
+    "standup": {
+      "command": "/Users/you/.local/bin/standup-mcp",
+      "args": []
+    }
+  }
+}
 ```
 
 > If `.mcp.json` already exists with other MCP servers configured, `init` safely merges the `standup` entry without modifying anything else.
